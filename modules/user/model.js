@@ -10,7 +10,14 @@ const addUser = `
         RETURNING *;
 
 `;
+
+const deleteUser = `
+        DELETE FROM users 
+        WHERE id = $1
+        RETURNING *;
+`;
 module.exports = {
   selectUsers,
   addUser,
+  deleteUser,
 };

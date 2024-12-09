@@ -3,19 +3,18 @@ const { createTable, dropTable } = require("./user_table");
 // Migrationni bajarish funksiyasi
 const runMigration = async () => {
   console.log("Running migrations...");
-  await createTable(); // `create_users_table.js` faylidagi funksiyani ishga tushiramiz
+  await createTable();
   console.log("Migrations completed.");
 };
 
 // Migrationni bekor qilish funksiyasi
 const rollbackMigration = async () => {
   console.log("Rolling back migrations...");
-  await dropTable(); // `drop_users_table` funksiyasini ishga tushiramiz
+  await dropTable();
   console.log("Rollback completed.");
 };
 
-// Jarayonni boshqarish
-const action = process.argv[2]; // CLI-dan "up" yoki "down" parametrini qabul qilamiz
+const action = process.argv[2];
 
 if (action === "up") {
   runMigration();

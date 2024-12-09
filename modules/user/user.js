@@ -13,9 +13,18 @@ const getUsers = async () => {
 const createUser = async (id, name) => {
   try {
     const res = await pool.query(model.addUser, [id, name]);
-    return res.rows;
+    return res.rows[0];
   } catch (err) {
     console.error("Error adding users:", err.message);
   }
 };
-module.exports = { getUsers, createUser };
+
+const removeUser = async (id) => {
+  try {
+    const res = await pool.query(model.deleteUser, [id]);
+    return res.rows[0];
+  } catch (err) {
+    console.error("Error deleting user:", err.message);
+  }
+};
+module.exports = { getUsers, createUser, removeUser };

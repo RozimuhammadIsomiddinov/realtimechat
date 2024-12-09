@@ -1,6 +1,5 @@
-const pool = require("../config/db"); // PostgreSQL ulanishi
+const pool = require("../config/db");
 
-// Jadval yaratish funksiyasi
 const createTable = async () => {
   const query = `
     CREATE TABLE IF NOT EXISTS users (
@@ -18,7 +17,6 @@ const createTable = async () => {
   }
 };
 
-// Jadvalni o'chirish funksiyasi
 const dropTable = async () => {
   const query = `
     DROP TABLE IF EXISTS users;
@@ -31,5 +29,4 @@ const dropTable = async () => {
   }
 };
 
-// Eksport qilish
 module.exports = { createTable, dropTable };

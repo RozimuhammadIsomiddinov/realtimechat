@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-const { createUser } = require("./modules/user/user");
+const { createUser, removeUser } = require("./modules/user/user");
 app.use(express.static(path.join(__dirname, "client")));
 
 // Create upload directory if it does not exist
@@ -41,14 +41,15 @@ app.post("/upload", fileUpload.single("file"), (req, res) => {
   res.send("Fayl muvaffaqiyatli yuklandi!");
 });
 const port = process.env.PORT;
+let users = [];
 io.on("connection", (socket) => {
   console.log(`Foydalanuvchi ulandi :`, socket.id);
 
   // Foydalanuvchi chatga kirganda
   socket.on("join", async ({ username }) => {
     // Foydalanuvchiga xush kelibsiz xabar
-    let users = await createUser(socket.id, username);
-    console.log(users);
+    users.push((await createUser(socket.id, username)).name);
+
     socket.emit(
       "message",
       formatMessage("admin", `${username}  Chat App'ga xush kelibsiz!`)
@@ -59,11 +60,12 @@ io.on("connection", (socket) => {
       "message",
       formatMessage("Admin", `${username} chatga qo'shildi`)
     );
-    io.emit("usersList", users);
+    io.emit("usersList", users.name);
     // Foydalanuvchi uzilganda
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       console.log("Foydalanuvchi uzildi: ", socket.id);
-      users = users.filter((user) => user.id !== socket.id);
+      users = await removeUser(socket.id);
+      console.log(users);
       io.emit(
         "message",
         formatMessage("Admin", `${username} chatni tark etdi`)
