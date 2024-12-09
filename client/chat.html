@@ -14,6 +14,38 @@
 
     <link rel="stylesheet" href="style.css" />
     <title>Chat App</title>
+    <style>
+      /* Styles for the upload container */
+      .upload-container {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+      }
+
+      .upload-container input[type="file"] {
+        margin-right: 10px;
+      }
+
+      .upload-container button {
+        display: flex;
+        align-items: center;
+      }
+
+      .upload-container button i {
+        margin-right: 5px; /* Space between icon and text */
+      }
+
+      /* Styles for the chat form */
+      .chat-form-container {
+        display: flex;
+        align-items: center; /* Center align the input and button */
+      }
+
+      #msg {
+        margin-right: 10px; /* Add space after the input field */
+        flex: 1; /* Allow the input field to grow */
+      }
+    </style>
   </head>
   <body>
     <div class="chat-container">
@@ -40,6 +72,12 @@
             autocomplete="off"
           />
           <button class="btn"><i class="fas fa-paper-plane"></i> Send</button>
+        </form>
+      </div>
+      <div class="upload-container">
+        <form id="upload-form" enctype="multipart/form-data">
+          <input type="file" name="file" accept="image/*" required />
+          <button class="btn"><i class="fas fa-plane"></i> Yuklash</button>
         </form>
       </div>
     </div>

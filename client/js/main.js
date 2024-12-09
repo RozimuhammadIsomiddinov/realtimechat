@@ -1,6 +1,7 @@
 const chatForm = document.getElementById("chat-form");
 const chatMessages = document.querySelector(".chat-messages");
 const usersList = document.getElementById("users");
+const privateChatForm = document.getElementById("private-chat-form");
 
 const { username } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
@@ -8,6 +9,7 @@ const { username } = Qs.parse(location.search, {
 
 const socket = io();
 
+// Serverdan kelgan xabarni chiqarish
 socket.on("message", (message) => {
   outMessage(message);
   chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -15,7 +17,7 @@ socket.on("message", (message) => {
 
 // Foydalanuvchilar ro'yxatini yangilash
 socket.on("usersList", (users) => {
-  updateUsersList(users);
+  updateUsersList(users, username);
 });
 
 // Foydalanuvchini qo'shilishi
@@ -34,6 +36,7 @@ chatForm.addEventListener("submit", (e) => {
   e.target.elements.msg.focus();
 });
 
+// Xabarlarni ekranga chiqarish
 function outMessage(message) {
   const div = document.createElement("div");
   div.classList.add("message");
@@ -43,11 +46,31 @@ function outMessage(message) {
   `;
   document.querySelector(".chat-messages").appendChild(div);
 }
-function updateUsersList(users) {
+
+// Foydalanuvchilar ro'yxatini yangilash va o'zini yashirish
+function updateUsersList(users, currentUser) {
   usersList.innerHTML = "";
-  users.forEach((user) => {
+
+  // O'zini ro'yxatdan olib tashlash
+  const filteredUsers = users.filter((user) => user.username !== currentUser);
+
+  if (filteredUsers.length > 0) {
+    filteredUsers.forEach((user) => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.classList.add("btn-style");
+
+      // Private chatga o'tkazish uchun link
+      a.textContent = user.username;
+
+      // li elementiga "a" tegini qo'shish
+      li.appendChild(a);
+      usersList.appendChild(li);
+    });
+  } else {
+    // Foydalanuvchi faqat o'zi bo'lsa
     const li = document.createElement("li");
-    li.textContent = user.username;
+    li.innerHTML = `<span style="color: #7ed; font-size: 18px; font-weight: bold;">Only you Online</span>`;
     usersList.appendChild(li);
-  });
+  }
 }
