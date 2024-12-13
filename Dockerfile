@@ -1,25 +1,15 @@
-# syntax=docker/dockerfile:1
+FROM node:21.2.0 AS builder
 
-ARG NODE_VERSION=21.2.0
+WORKDIR /chat
 
-FROM node:${NODE_VERSION}-alpine AS base
-WORKDIR /usr/src/app
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+COPY .env ./
+
 EXPOSE 3001
 
-FROM base AS dev
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
-    npm ci --include=dev
-USER node
-COPY . .
 CMD ["npm", "start"]
-
-FROM base AS prod
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
-    npm ci --omit=dev
-USER node
-COPY . .
-CMD ["node", "server.js"]
